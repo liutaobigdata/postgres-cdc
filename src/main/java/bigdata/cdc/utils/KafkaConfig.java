@@ -22,7 +22,7 @@ public class KafkaConfig {
         props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 30 * 1000);
         //设置客户端内部重试次数。
         props.put(ProducerConfig.RETRIES_CONFIG, 5);
-        props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, "com.burgeon.bigdata.server.utils.IdPartation");
+        props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, "bigdata.cdc.utils.IdPartation");
         //设置客户端内部重试间隔。
         props.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, 3000);
         if (System.getProperty("environment").equalsIgnoreCase("test")) {
