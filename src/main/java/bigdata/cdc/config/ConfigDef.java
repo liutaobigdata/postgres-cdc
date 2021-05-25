@@ -3,7 +3,7 @@ package bigdata.cdc.config;
 import lombok.Data;
 
 @Data
-public class TunnelConfig {
+public class ConfigDef {
     private String appId;
     private String metaDomain;
     private String configFile;

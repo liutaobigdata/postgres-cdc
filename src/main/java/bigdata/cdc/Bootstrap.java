@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class Bootstrap {
 
-    private static final TunnelConfig                   /**/ TUNNEL_CONFIG  /**/ = new TunnelConfig();
+    private static final ConfigDef                   /**/ TUNNEL_CONFIG  /**/ = new ConfigDef();
 
     public static void main(String[] args) {
 
@@ -64,7 +64,7 @@ public class Bootstrap {
 
     }
 
-    public static TunnelConfig getTunnelConfig() {
+    public static ConfigDef getTunnelConfig() {
         return TUNNEL_CONFIG;
     }
 
