@@ -2,7 +2,7 @@ package bigdata.cdc;
 
 import bigdata.cdc.config.*;
 import bigdata.cdc.constants.Constants;
-import bigdata.cdc.server.TunnelServer;
+import bigdata.cdc.server.CDCServer;
 import bigdata.cdc.utils.Notify;
 
 import java.io.BufferedReader;
@@ -59,7 +59,7 @@ public class Bootstrap {
         String topic = config.getProperty(Constants.KAFKA_TOPIC, "").trim();
         startSubscribe(null, pgConfig, tables, slotName, decoding, notify, lsnFile, kafkaHost, topic, jksPath);
 
-        System.out.println("TunnelServer Started at" + TUNNEL_CONFIG.getProcessId());
+        System.out.println("CDCServer Started at" + TUNNEL_CONFIG.getProcessId());
 
 
     }
@@ -110,11 +110,11 @@ public class Bootstrap {
     private static void startSubscribe(TagetDBConfig adbConfig, PgConfig pgConfig, List<String> tables, String slotName, String decoding, Notify notify, String lsnFile, String kafkaHost, String topic, String jksPath) {
 
         //解析配置文件中的subscribes
-        TunnelServer newServer = null;
+        CDCServer newServer = null;
         try {
             SubscribeConfig subscribeConfig = toTunnelConfig(adbConfig, pgConfig, slotName);
             subscribeConfig.setServerId(generateServerId("127.0.0.1", getPid(), slotName));
-            newServer = new TunnelServer(subscribeConfig, tables, decoding, notify, lsnFile, kafkaHost, topic, jksPath);
+            newServer = new CDCServer(subscribeConfig, tables, decoding, notify, lsnFile, kafkaHost, topic, jksPath);
             newServer.start();
         } catch (Exception e) {
             if (newServer != null) {

@@ -4,9 +4,8 @@
 基于postgresql 逻辑复制功能 通过将wal日志解析成sql 发送至kafka ，最终在consumer端进行wal 日志的sql 转换 实现pg实例到adb 实例的数据实时同步 
 
 ## 架构
- 描述： 基于哈罗开源的pg逻辑复制代码进行改造-利用pg  replicationStream 轮询采集某个slot （逻辑复制槽）中的wal 日志  通过 Lexer 解析工具将DML语言实时发送至kafka
+ 描述：利用pg  replicationStream 轮询采集某个slot （逻辑复制槽）中的wal 日志  通过 Lexer 解析工具将DML语言实时发送至kafka
 使用自定义分区将相同id 记录的数据写入同一个分区中保证了数据的先后顺序。保证最大吞吐的同时也保证了数据的一致性，最终达到数据的实时性
-![architecture](src/main/resources/architecture.png)
 
 ## 配置文件config.properties说明
 

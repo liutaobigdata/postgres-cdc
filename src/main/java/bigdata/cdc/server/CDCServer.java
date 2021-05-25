@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-public class TunnelServer {
+public class CDCServer {
 
     private final String                /**/ serverId;
     private final JdbcConfig            /**/ jdbcConfig;
@@ -48,7 +48,7 @@ public class TunnelServer {
     private String topic;
     private volatile String id;
 
-    public TunnelServer(SubscribeConfig config, List tables, String decoding, Notify notify, String lsnFile, String kafkaHost, String topic, String jksPath) {
+    public CDCServer(SubscribeConfig config, List tables, String decoding, Notify notify, String lsnFile, String kafkaHost, String topic, String jksPath) {
         this.serverId = config.getServerId();
         this.jdbcConfig = config.getJdbcConfig();
         this.slotName = this.jdbcConfig.getSlotName();
@@ -123,7 +123,6 @@ public class TunnelServer {
             }
             throw e;
         }
-        System.out.println("GetRplSlot success,slot:" + this.slotName);
     }
 
     private void createRplStream() throws SQLException {
