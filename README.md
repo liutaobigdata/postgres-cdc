@@ -15,7 +15,6 @@
 - pg_user :postgres 高级账号
 - pg_password : postgres 密码
 - slot_name : postgres 数据库 slot 名称 
-- environment : 生产环境使用  prod
 - lsn_file : 保存postgres  lsn 文件路径
 - kafka_host : cdc 采集到postgres 日志发送到 kafka 的 broker 地址
 - kafka_topic :  发送到 Kafka 的 topic 名称
