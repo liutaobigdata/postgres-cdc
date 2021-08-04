@@ -25,7 +25,7 @@ public class KafkaConfig {
         props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, "bigdata.cdc.utils.IdPartation");
         //设置客户端内部重试间隔。
         props.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, 3000);
-        if (sslTruststoreLocation != null && !sslTruststoreLocation.equalsIgnoreCase("")) {
+        if (sslTruststoreLocation != null && !sslTruststoreLocation.equalsIgnoreCase("null")) {
             //设置SSL根证书的路径，请记得将XXX修改为自己的路径
             //与sasl路径类似，该文件也不能被打包到jar中
             props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, sslTruststoreLocation);
