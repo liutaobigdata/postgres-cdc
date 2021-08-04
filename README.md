@@ -14,9 +14,6 @@
 - pg_url : postgres jdbc 连接串 
 - pg_user :postgres 高级账号
 - pg_password : postgres 密码
-- target_url : 目标数据库jdbc 连接串
-- target_user :目标数据库只读用户
-- target_password :目标数据库密码
 - slot_name : postgres 数据库 slot 名称 
 - environment : 生产环境使用  prod
 - lsn_file : 保存postgres  lsn 文件路径
