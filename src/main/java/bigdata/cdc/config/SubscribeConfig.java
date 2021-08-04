@@ -5,16 +5,7 @@ public class SubscribeConfig {
     private String serverId;
     private JdbcConfig jdbcConfig;
     private ZkConfig zkConfig;
-    private TagetDBConfig adbConfig;
     private  PgConfig pgConfig;
-
-    public TagetDBConfig getAdbConfig() {
-        return adbConfig;
-    }
-
-    public void setAdbConfig(TagetDBConfig adbConfig) {
-        this.adbConfig = adbConfig;
-    }
 
     public String getServerId() {
         return serverId;

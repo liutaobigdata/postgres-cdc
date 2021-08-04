@@ -25,39 +25,29 @@ public class Bootstrap {
         Map<String, String> cmdArgs = toMap(args);
         initTunnelConfig(cmdArgs);
 
-
         List<String> tables = getTables(TUNNEL_CONFIG.getTableFile());
-
 
         Properties config = config();
 
         String decoding = config.getProperty(Constants.DECODING, "");
 
 
-        String environment = config.getProperty(Constants.ENVIRONMENT, "");
-        System.setProperty("environment", environment);
-
         String slotName = config.getProperty(Constants.SLOT_NAME, "");
 
         String pgUrl = config.getProperty(Constants.PG_URL, "");
         String pgUser = config.getProperty(Constants.PG_USER, "");
         String pgPassword = config.getProperty(Constants.PG_PASSWORD, "");
-        String targetUrl = config.getProperty(Constants.TARGET_URL, "");
-        String targetUser = config.getProperty(Constants.TARGET_USER, "");
-        String targetPassword = config.getProperty(Constants.TARGET_PASSWORD, "");
-        String targetConnectionTimeout = config.getProperty(Constants.CONNECTION_TIMEOUT, "");
 
         String dingTalkToken = config.getProperty(Constants.TINGTOKEN, "");
 
         String lsnFile = config.getProperty(Constants.LSNFILE, "").trim();
         String jksPath = config.getProperty(Constants.JKS_PATH, "").trim();
 
-        TagetDBConfig targetConfig = new TagetDBConfig().url(targetUrl).user(targetUser).password(targetPassword).timeout(targetConnectionTimeout);
         PgConfig pgConfig = new PgConfig().url(pgUrl).user(pgUser).password(pgPassword);
         Notify notify = new Notify(dingTalkToken);
         String kafkaHost = config.getProperty(Constants.KAFKA_HOST, "").trim();
         String topic = config.getProperty(Constants.KAFKA_TOPIC, "").trim();
-        startSubscribe(null, pgConfig, tables, slotName, decoding, notify, lsnFile, kafkaHost, topic, jksPath);
+        startSubscribe(pgConfig, tables, slotName, decoding, notify, lsnFile, kafkaHost, topic, jksPath);
 
         System.out.println("CDCServer Started at" + TUNNEL_CONFIG.getProcessId());
 
@@ -107,12 +97,12 @@ public class Bootstrap {
         return Integer.parseInt(name.split("@")[0]);
     }
 
-    private static void startSubscribe(TagetDBConfig adbConfig, PgConfig pgConfig, List<String> tables, String slotName, String decoding, Notify notify, String lsnFile, String kafkaHost, String topic, String jksPath) {
+    private static void startSubscribe(PgConfig pgConfig, List<String> tables, String slotName, String decoding, Notify notify, String lsnFile, String kafkaHost, String topic, String jksPath) {
 
         //解析配置文件中的subscribes
         CDCServer newServer = null;
         try {
-            SubscribeConfig subscribeConfig = toTunnelConfig(adbConfig, pgConfig, slotName);
+            SubscribeConfig subscribeConfig = toTunnelConfig(pgConfig, slotName);
             subscribeConfig.setServerId(generateServerId("127.0.0.1", getPid(), slotName));
             newServer = new CDCServer(subscribeConfig, tables, decoding, notify, lsnFile, kafkaHost, topic, jksPath);
             newServer.start();
@@ -125,13 +115,12 @@ public class Bootstrap {
     }
 
     /**
-     * @param adbConfig
      * @param pgConfig
      * @param slotName
      * @return
      * @desc The  Entrance  of Subscribe from pg WAL-Log
      */
-    private static SubscribeConfig toTunnelConfig(TagetDBConfig adbConfig, PgConfig pgConfig, String slotName) {
+    private static SubscribeConfig toTunnelConfig(PgConfig pgConfig, String slotName) {
 
 
         //获取Pg数据库的连接信息
@@ -140,7 +129,6 @@ public class Bootstrap {
 
         SubscribeConfig subscribeConfig = new SubscribeConfig();
         subscribeConfig.setJdbcConfig(jdbcConfig);
-        subscribeConfig.setAdbConfig(adbConfig);
         subscribeConfig.setServerId(generateServerId(pgConfig.getUrl(), 3433, jdbcConfig.getSlotName()));
 
         return subscribeConfig;
