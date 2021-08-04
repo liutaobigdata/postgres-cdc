@@ -184,7 +184,6 @@ public class CDCServer {
                     });
                     ProducerRecord record = new ProducerRecord(this.topic, id, message);
                     producer.send(record);
-                    producer.flush();
                 }
 
             }

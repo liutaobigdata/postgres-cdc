@@ -24,5 +24,21 @@
 
  ``` shell
    
-   nohup   java -Xms8g -Xmx8g  -jar -Dfile.encoding=utf-8  postgresql-cdc.jar  -c  producer.properties -t  tables
-  ```
+   nohup java -Xms8g -Xmx8g  -jar -Dfile.encoding=utf-8  postgresql-cdc.jar  -c  producer.properties -t  tables > /dev/null 2>$1 $
+ ```
+
+
+# pg数据库相关配置
+ -  检查 [wal_level](https://www.postgresql.org/docs/14/sql-altersystem.html) 的值是否是 ：logic 如果不是需要改为 logic 注意修改后需重启实例
+ - 检查是否有slot  查看命令：
+  ```sql
+      select  * from pg_replication_slots ; 
+
+```
+
+
+    
+  ```sql 
+     如果没有需要创建 创建命令：
+     select * from pg_create_logical_replication_slot('regression_slot', 'test_decoding');
+```
