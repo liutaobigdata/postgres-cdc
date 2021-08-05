@@ -1,10 +1,9 @@
 package bigdata.cdc.utils;
 
 
-import org.apache.kafka.clients.CommonClientConfigs;
+
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.config.SaslConfigs;
-import org.apache.kafka.common.config.SslConfigs;
+
 
 import java.util.Properties;
 
@@ -25,20 +24,6 @@ public class KafkaConfig {
         props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, "bigdata.cdc.utils.IdPartation");
         //设置客户端内部重试间隔。
         props.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, 3000);
-        if (sslTruststoreLocation != null && !sslTruststoreLocation.equalsIgnoreCase("null")) {
-            //设置SSL根证书的路径，请记得将XXX修改为自己的路径
-            //与sasl路径类似，该文件也不能被打包到jar中
-            props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, sslTruststoreLocation);
-            //根证书store的密码，保持不变
-            props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, "KafkaOnsClient");
-            //接入协议，目前支持使用SASL_SSL协议接入
-            props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
-            //SASL鉴权方式，保持不变
-            props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
-
-            //hostname校验改成空
-            props.put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "");
-        }
 
 
         return props;

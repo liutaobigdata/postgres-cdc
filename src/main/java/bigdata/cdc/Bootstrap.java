@@ -173,12 +173,8 @@ public class Bootstrap {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
             String line = null;
             while ((line = br.readLine()) != null) {
-                if (line.contains("#")) {
-                    continue;
-                }
                 String[] kV = line.split("=");
                 prop.put(kV[0].trim(), kV[1] != null ? kV[1].trim() : "");
-
             }
         } catch (Exception e) {
             System.out.println("读取配置文件异常" + e.getMessage());
