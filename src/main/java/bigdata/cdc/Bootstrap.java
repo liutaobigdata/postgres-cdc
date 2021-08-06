@@ -41,7 +41,10 @@ public class Bootstrap {
         String dingTalkToken = config.getProperty(Constants.TINGTOKEN, "");
 
         String lsnFile = config.getProperty(Constants.LSNFILE, "").trim();
-        String jksPath = config.getProperty(Constants.JKS_PATH, "").trim();
+        String jksPath = null;
+        if (config.containsKey(Constants.JKS_PATH)) {
+            jksPath = config.getProperty(Constants.JKS_PATH, "").trim();
+        }
 
         PgConfig pgConfig = new PgConfig().url(pgUrl).user(pgUser).password(pgPassword);
         Notify notify = new Notify(dingTalkToken);

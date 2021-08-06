@@ -3,10 +3,7 @@ package bigdata.cdc.server;
 import bigdata.cdc.config.JdbcConfig;
 import bigdata.cdc.config.SubscribeConfig;
 import bigdata.cdc.model.Event;
-import bigdata.cdc.utils.FileOperator;
-import bigdata.cdc.utils.KafkaConfig;
-import bigdata.cdc.utils.Notify;
-import bigdata.cdc.utils.ParseEvent;
+import bigdata.cdc.utils.*;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.postgresql.PGConnection;
@@ -14,6 +11,8 @@ import org.postgresql.PGProperty;
 import org.postgresql.replication.LogSequenceNumber;
 import org.postgresql.replication.PGReplicationStream;
 import org.postgresql.replication.fluent.logical.ChainedLogicalStreamBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.sql.Connection;
@@ -24,6 +23,8 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public class CDCServer {
+
+    private Logger log = LoggerFactory.getLogger(CDCServer.class);
 
     private final String                /**/ serverId;
     private final JdbcConfig            /**/ jdbcConfig;
@@ -63,7 +64,9 @@ public class CDCServer {
 
             createRplConn();
         } catch (SQLException e) {
+
             this.notify.sendDingTalk("The environment【" + System.getProperty("environment") + "】 initialize PG error[" + e.getLocalizedMessage() + "]");
+            log.error(String.format("create pg connection error: [%s]", ExceptionUtil.getStackLog(e)));
         }
 
         this.startThread = new Thread(new StartTask(), "TunnelStartThread-" + this.slotName);
@@ -138,8 +141,8 @@ public class CDCServer {
 
         } else {
 
-            builder.withStartPosition(LogSequenceNumber.valueOf(Long.valueOf(lsn)));
-            this.notify.sendDingTalk("The environment【" + System.getProperty("environment") + "】 from the reference  lsn consume [" + lsn + "]");
+            builder.withStartPosition(LogSequenceNumber.valueOf(lsn));
+            this.notify.sendDingTalk("The environment【" + System.getProperty("environment") + "】 from the given  lsn consume [" + lsn + "]");
         }
 
 
@@ -220,6 +223,7 @@ public class CDCServer {
     }
 
     private class StartTask implements Runnable {
+        private Logger log = LoggerFactory.getLogger(StartTask.class);
 
         @Override
         public void run() {
@@ -232,7 +236,7 @@ public class CDCServer {
                 receiveThread.start();
                 System.out.println("Startup RplStream Success");
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(String.format("createSlot and create Stream Error:[%s]", ExceptionUtil.getStackLog(e)));
                 shutdown();
             }
         }
@@ -241,6 +245,7 @@ public class CDCServer {
     }
 
     private class ReceiveTask implements Runnable {
+        private Logger log = LoggerFactory.getLogger(ReceiveTask.class);
 
         @Override
         public void run() {
@@ -248,8 +253,7 @@ public class CDCServer {
                 try {
                     receiveStream();
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("receive msg failure,try to recover" + e.getLocalizedMessage());
+                    log.error(String.format("receive msg failure[%s]", ExceptionUtil.getStackLog(e)));
                     recover();
                 }
             }
